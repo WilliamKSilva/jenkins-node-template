@@ -1,20 +1,22 @@
 FROM jenkins/jenkins:2.462.2-jdk17
-
 USER root
-RUN apt-get update && apt-get install -y lsb-release
 
-# Instalando Node e NPM
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x
-RUN apt-get install nodejs -y
+# Update and install dependencies
+RUN apt-get update && apt-get install -y lsb-release curl gnupg2
 
-# Instalando Docker
-RUN curl -fsSLo /usr/share/keyrings/docker-archive-keyring.asc \
-  https://download.docker.com/linux/debian/gpg
-RUN echo "deb [arch=$(dpkg --print-architecture) \
-  signed-by=/usr/share/keyrings/docker-archive-keyring.asc] \
-  https://download.docker.com/linux/debian \
-  $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+# Installing Node and NPM
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get install -y nodejs
 
-RUN apt-get update && apt-get install -y docker-ce-cli
+# Installing Podman
+RUN . /etc/os-release && \
+    echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_${VERSION_ID}/ /" | tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list && \
+    curl -L "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_${VERSION_ID}/Release.key" | apt-key add -
+
+RUN apt-get update && \
+    apt-get install -y podman
+
+# Set up subuid and subgid for rootless mode
+RUN usermod --add-subuids 100000-165535 --add-subgids 100000-165535 jenkins
+
 USER jenkins
-RUN jenkins-plugin-cli --plugins "docker-workflow"

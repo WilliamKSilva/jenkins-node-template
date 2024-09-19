@@ -1,6 +1,6 @@
-#TODO: ao invés de instalar todas as dependências que vamos precisar nas pipelines (Node, NPM, etc) tentar fazer funcionar
-rodar containers Podman (ou Docker caso for mais viável) dentro do nosso Jenkins. A primeiro momento instalar as dependências
-manualmente por esse Dockerfile do nosso Jenkins é relativamente mais fácil.
+# TODO: ao invés de instalar todas as dependências que vamos precisar nas pipelines (Node, NPM, etc) tentar fazer funcionar
+# rodar containers Podman (ou Docker caso for mais viável) dentro do nosso Jenkins. A primeiro momento instalar as dependências
+# manualmente por esse Dockerfile do nosso Jenkins é relativamente mais fácil.
 
 FROM jenkins/jenkins:2.462.2-jdk17
 USER root
